@@ -1,0 +1,78 @@
+//................merge sot  归并排序
+//思想：先利用递归分而治之，再进行归并排序
+#include<iostream>
+#include<stdlib.h>
+#include<time.h>
+using namespace std;
+const int N = 50;
+void Merge(int arry[], int temp[], int l_st, int r_st, int r_end);
+void Msort(int arry[], int temparry[], int left, int right);
+int main(void)
+{
+    int arry[N] = { 0 };
+    int sort[N] = { 0 };
+    srand((int)time(0));
+    cout << endl;
+    cout << "The original arry:" << endl;
+    for (int i = 0; i < N; i++)
+    {
+        arry[i] = rand() % 1000;
+        cout << arry[i] << " ";
+    }
+    cout << endl;
+    Msort(arry, sort, 0, N - 1);
+    cout << "The sorted arry:" << endl;
+    for (int i = 0; i < N; i++)
+        cout << arry[i] << " ";
+    cout << endl;
+    return 0;
+}
+
+void Msort(int arry[], int temparry[], int left, int right)      /*分而治之*/
+{
+    if (left < right)
+    {
+        int  center = (left + right) / 2;
+        Msort(arry, temparry, left, center);       /*对左边部分进行分治递归排序*/
+        Msort(arry, temparry, center + 1, right);  /*对右边部分进行分治递归排序*/
+        Merge(arry, temparry, left, center + 1, right);      /*将递归排序后的每部分进行归并（合并）排序*/
+    }
+}
+
+void Merge(int arry[], int temp[], int l_st, int r_st, int r_end)
+{
+    int temp_st = l_st;
+    int r_temp = r_st;//it is important and can't forget it and can't omit it
+    for (; l_st < r_temp && r_st <= r_end; temp_st++)
+    {
+        if (arry[l_st] > arry[r_st])
+        {
+            temp[temp_st] = arry[r_st];   /*用temp[]临时存放部分排序后的数组*/
+            r_st++;
+        }
+        else
+        {
+            temp[temp_st] = arry[l_st];
+            l_st++;
+        }
+    }
+    while (l_st < r_temp)
+    {
+        temp[temp_st] = arry[l_st];
+        temp_st++;
+        l_st++;
+    }
+    while (r_st <= r_end)
+    {
+        temp[temp_st] = arry[r_st];
+        temp_st++;
+        r_st++;
+    }
+    for (int i = 0; i <= r_end; i++)   //key step  每次分而治之虽然是递归，但是每次分成两部分，是先执行的左边，左边执行完后才会返回到递归执行下一步的右边。也就是temp[]里的元素，已排序部分是从左边[0]开始的
+    {
+        arry[i] = temp[i];
+        //  cout<<temp[i]<<" ";
+    }
+}
+
+
